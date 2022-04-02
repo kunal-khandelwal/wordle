@@ -1,11 +1,13 @@
-
 const grid = document.getElementById("grid");
 const keyboard = document.getElementById("keyboard");
+
+// let answer = fetch(url).then(resp => resp[0]);
 
 let answer = "";
 
 // try making api to fetch from some dictionary
-const words = ["panic", "world", "eagle", "bends"];
+const words = ["panic", "world", "hello", "bends"];
+
 
 let attempts = [];
 let currentAttempt = "";
@@ -75,9 +77,41 @@ function renderCurrentAttempt() {
 
 function playLetter(letter) {
   currentAttempt = currentAttempt + letter;
-
   renderCurrentAttempt();
 }
+
+closeModal = () => {
+  document.querySelector(".modal").style.display = "none";
+  document.querySelector("#answer").style.display = "none";
+};
+
+showModal = () => {
+  const span = document.getElementsByClassName("close")[0];
+  const modal = document.querySelector(".modal");
+  const answerPara = document.querySelector("#answer");
+  const newGameBtn = document.querySelector(".modal #new-game");
+
+  modal.style.display = "block";
+  answerPara.style.display = "block";
+
+  span.onclick = () => closeModal();
+
+  window.onclick = (event) => (event.target == modal ? closeModal() : null);
+
+  newGameBtn.onclick = () => closeModal();
+};
+
+finishGame = () => {
+  const answerPara = document.querySelector("#answer");
+
+  if (attempts.slice(-1)[0] === answer) {
+    answerPara.innerHTML = `Congratulations!, You Won <br/> The answer is  <span style="color:green;"> ${answer} </span>`;
+  } else if (attempts.length > 5) {
+    answerPara.innerHTML = `Try Again! <br/> The answer Was <span style="color:green;"> ${answer} </span>`;
+  }
+  showModal();
+  init();
+};
 
 function handleInput(e) {
   const key = e.key.toLowerCase();
@@ -85,15 +119,14 @@ function handleInput(e) {
   if (key === "enter" && currentAttempt.length === 5) {
     attempts.push(currentAttempt);
     currentAttempt = "";
-
     renderAttempts();
+    if (attempts.slice(-1)[0] === answer || attempts.length > 5) finishGame();
   }
 
   if (key === "backspace" && currentAttempt.length) {
     const letters = currentAttempt.split("");
     letters.pop();
     currentAttempt = letters.join("");
-
     renderCurrentAttempt();
   }
 
@@ -107,8 +140,6 @@ function init() {
   currentAttempt = "";
 
   answer = words[Math.floor(Math.random() * words.length)];
-
-  document.getElementById("answer").textContent = answer;
 
   drawGrid();
   drawKeyboard();

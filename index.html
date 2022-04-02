@@ -5,14 +5,23 @@
   </head>
   <body>
     <h1>Wordle</h1>
-    <p id="answer"></p>
+
     <div id="grid"></div>
-    
+
     <div id="keyboard"></div>
 
     <p>
       <button id="new-game" onClick="init()">New Game</button>
     </p>
+
+    <div class="modal">
+      <div class="modal-content">
+        <span class="close" id="close-btn">&times;</span>
+        <p id="answer"></p>
+        <button id="new-game">New Game</button>
+      </div>
+    </div>
+
     <script src="script.js"></script>
   </body>
 </html>
