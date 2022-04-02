@@ -1,13 +1,31 @@
 const grid = document.getElementById("grid");
 const keyboard = document.getElementById("keyboard");
 
-// let answer = fetch(url).then(resp => resp[0]);
-
 let answer = "";
+
+const options = {
+  method: "GET",
+  headers: {
+    "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com",
+    "X-RapidAPI-Key": "abc5f0915dmsh5a1bb42e0afed69p1633e8jsn3805a11abe11",
+  },
+};
+
+getNewWord=() =>{  
+  const apiResponse = fetch("https://wordsapiv1.p.rapidapi.com/words/?letters=5&random=true", options)
+    .then((response) => response.json())
+    .then((response) => {
+      // console.log(response);
+      return response;
+    })
+    .catch((err) => console.error(err));
+
+    return apiResponse;
+}
+
 
 // try making api to fetch from some dictionary
 const words = ["panic", "world", "hello", "bends"];
-
 
 let attempts = [];
 let currentAttempt = "";
@@ -83,6 +101,7 @@ function playLetter(letter) {
 closeModal = () => {
   document.querySelector(".modal").style.display = "none";
   document.querySelector("#answer").style.display = "none";
+  init();
 };
 
 showModal = () => {
@@ -110,7 +129,6 @@ finishGame = () => {
     answerPara.innerHTML = `Try Again! <br/> The answer Was <span style="color:green;"> ${answer} </span>`;
   }
   showModal();
-  init();
 };
 
 function handleInput(e) {
@@ -135,14 +153,24 @@ function handleInput(e) {
   }
 }
 
-function init() {
+async function init() {
   attempts = [];
   currentAttempt = "";
 
-  answer = words[Math.floor(Math.random() * words.length)];
-
   drawGrid();
   drawKeyboard();
+
+ answer = await getNewWord();
+ 
+  while(answer.results == undefined){
+    answer = await getNewWord();
+  }
+
+  console.log(answer);
+
+
+  answer = answer.word;
+
 
   renderAttempts();
   renderCurrentAttempt();
