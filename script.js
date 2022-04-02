@@ -2,6 +2,7 @@ const grid = document.getElementById("grid");
 const keyboard = document.getElementById("keyboard");
 
 let answer = "";
+let flag = true;
 
 const options = {
   method: "GET",
@@ -11,8 +12,11 @@ const options = {
   },
 };
 
-getNewWord=() =>{  
-  const apiResponse = fetch("https://wordsapiv1.p.rapidapi.com/words/?letters=5&random=true", options)
+getNewWord = () => {
+  const apiResponse = fetch(
+    "https://wordsapiv1.p.rapidapi.com/words/?letters=5&random=true",
+    options
+  )
     .then((response) => response.json())
     .then((response) => {
       // console.log(response);
@@ -20,12 +24,22 @@ getNewWord=() =>{
     })
     .catch((err) => console.error(err));
 
-    return apiResponse;
-}
-
-
-// try making api to fetch from some dictionary
-const words = ["panic", "world", "hello", "bends"];
+  return apiResponse;
+};
+checkWord = (word) => {
+  fetch(
+    `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
+  )
+    .then((res) => {
+      if(res.status) flag = false;
+      else flag = true;
+      res.json;
+    })
+    .then((res) => {
+      return res;
+    })
+    .catch((err) => console.log(err));
+};
 
 let attempts = [];
 let currentAttempt = "";
@@ -160,21 +174,16 @@ async function init() {
   drawGrid();
   drawKeyboard();
 
- answer = await getNewWord();
- 
-  while(answer.results == undefined){
+  while(flag) {
     answer = await getNewWord();
+    checkWord(answer.word);
   }
 
   console.log(answer);
-
-
   answer = answer.word;
-
 
   renderAttempts();
   renderCurrentAttempt();
-
   document.removeEventListener("keydown", handleInput);
   document.addEventListener("keydown", handleInput);
 }
