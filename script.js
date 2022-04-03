@@ -13,6 +13,7 @@ const options = {
 };
 
 getNewWord = () => {
+  debugger;
   const apiResponse = fetch(
     "https://wordsapiv1.p.rapidapi.com/words/?letters=5&random=true",
     options
@@ -26,19 +27,17 @@ getNewWord = () => {
 
   return apiResponse;
 };
+
 checkWord = (word) => {
-  fetch(
-    `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
-  )
+  const checkWordFlag = fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
     .then((res) => {
-      if(res.status) flag = false;
-      else flag = true;
-      res.json;
+      if (res.status == 200) return false;
+      else return true;
     })
-    .then((res) => {
-      return res;
-    })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return true;
+    });
+    return checkWordFlag;
 };
 
 let attempts = [];
@@ -174,9 +173,9 @@ async function init() {
   drawGrid();
   drawKeyboard();
 
-  while(flag) {
+  while (flag) {
     answer = await getNewWord();
-    checkWord(answer.word);
+    flag = await checkWord(answer.word);
   }
 
   console.log(answer);
