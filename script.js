@@ -13,7 +13,6 @@ const options = {
 };
 
 getNewWord = () => {
-  debugger;
   const apiResponse = fetch(
     "https://wordsapiv1.p.rapidapi.com/words/?letters=5&random=true",
     options
@@ -112,9 +111,10 @@ function playLetter(letter) {
 }
 
 closeModal = () => {
+  flag=true;
+  init();
   document.querySelector(".modal").style.display = "none";
   document.querySelector("#answer").style.display = "none";
-  init();
 };
 
 showModal = () => {
@@ -148,6 +148,7 @@ function handleInput(e) {
   const key = e.key.toLowerCase();
 
   if (key === "enter" && currentAttempt.length === 5) {
+    console.log(currentAttempt);
     attempts.push(currentAttempt);
     currentAttempt = "";
     renderAttempts();
